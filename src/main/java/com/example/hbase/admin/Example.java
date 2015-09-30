@@ -4,9 +4,7 @@ package com.example.hbase.admin;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.*;
-import org.apache.hadoop.hbase.client.Admin;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.io.compress.Compression;
 
 import java.io.IOException;
@@ -39,6 +37,44 @@ public class Example {
             System.out.println(" Done.");
         }
 
+    }
+
+    public static void insertData(Configuration config) throws IOException {
+        try( Connection connection = ConnectionFactory.createConnection(config);
+            Admin admin = connection.getAdmin()) {
+            TableName tableName = TableName.valueOf(TABLE_NAME);
+            if(!admin.tableExists(tableName)) {
+                System.out.println("Table does not exist.");
+                System.exit(-1);
+            }
+
+            Table table = connection.getTable(tableName);
+            Put put = new Put("first".getBytes());
+            put.addColumn(CF_DEFAULT.getBytes(), "col1".getBytes(), "value1".getBytes());
+
+            System.out.println("Insert Data .");
+            table.put(put);
+
+            table.close();
+
+        }
+    }
+
+    public static void getData(Configuration config) throws IOException {
+        try ( Connection connection = ConnectionFactory.createConnection(config))
+        {
+            Table table =  connection.getTable(TableName.valueOf(TABLE_NAME));
+            Get get = new Get("first".getBytes());
+            Result result = table.get(get);
+            for (Cell cell : result.rawCells())
+            {
+                System.out.println("--------------------" + new String(CellUtil.cloneRow(cell)) + "----------------------------");
+                System.out.println("Column Family: " + new String(CellUtil.cloneFamily(cell)));
+                System.out.println("Column       :" + new String(CellUtil.cloneQualifier(cell)));
+                System.out.println("value        : " + new String(CellUtil.cloneValue(cell)));
+            }
+
+        }
     }
 
     public static void modifySchema (Configuration config) throws IOException {
@@ -91,6 +127,8 @@ public class Example {
 
         try {
             createSchemaTables(config);
+            insertData(config);
+            getData(config);
             //modifySchema(config);
         } catch (IOException e) {
             e.printStackTrace();
