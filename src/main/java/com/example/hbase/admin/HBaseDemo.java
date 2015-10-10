@@ -5,6 +5,9 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 
 /**
@@ -19,19 +22,21 @@ public class HBaseDemo {
     }
 
     public static void createTable(String tablename, String columnFamily) throws Exception {
-        HBaseAdmin admin = new HBaseAdmin(conf);
-        if(admin.tableExists(tablename)) {
-            System.out.println("Table exists!");
-            System.exit(0);
-        }
-        else {
-            HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf(tablename));
-            tableDesc.addFamily(new HColumnDescriptor(columnFamily));
-            admin.createTable(tableDesc);
-            System.out.println("create table success!");
-        }
-        admin.close();
+        try (
+                Connection connection = ConnectionFactory.createConnection(conf);
+                Admin admin = connection.getAdmin()) {
+            if (admin.tableExists(TableName.valueOf(tablename))) {
+                System.out.println("Table exists!");
+                System.exit(0);
+            } else {
+                HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf(tablename));
+                tableDesc.addFamily(new HColumnDescriptor(columnFamily));
+                admin.createTable(tableDesc);
+                System.out.println("create table success!");
+            }
+            admin.close();
 
+        }
     }
 
 }

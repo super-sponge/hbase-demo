@@ -9,6 +9,7 @@ import java.io.IOException;
 
 /**
  * Created by sponge on 15-10-9.
+ * @deprecated
  */
 public class Weather {
     private static final String TABLE_NAME = "weather";
