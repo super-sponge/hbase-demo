@@ -19,6 +19,7 @@ import java.util.Date;
 public class APIStore {
 
 
+    public static final String APIX_APIKEY="e1ee7045cf7a4f0462768d9654d7a933";
 
     private static final String TABLE_NAME = "weatherjson";
     private static final String CF_JSON= "cf";
@@ -150,7 +151,7 @@ public class APIStore {
      * @param APIKEY    APIKEY, should apply from web
      * @return  json data
      */
-    private static String request(String httpUrl, String httpArg, String APIKEY) {
+    public static String request(String httpUrl, String httpArg, String APIKEY) {
         BufferedReader reader = null;
         String result = null;
         StringBuffer sbf = new StringBuffer();
@@ -190,8 +191,7 @@ public class APIStore {
     private static String getWeatherFromApi(String cityid) {
         String httpUrl = "http://a.apix.cn/apixlife/weather/weather";
         String httpArg = "cityid=" + cityid;
-        String APIKEY = "e1ee7045cf7a4f0462768d9654d7a933";
-        return request(httpUrl, httpArg, APIKEY);
+        return request(httpUrl, httpArg, APIX_APIKEY);
 
     }
 
