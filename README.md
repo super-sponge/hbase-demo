@@ -18,7 +18,12 @@
         根据城市名称查询天气
         表名称: weatherjson; rowkey: 城市名称+“；”+日期; 列簇: def; 列：wind_power, post_code, high_temp, temp, time, weather, low_temp, wind_direction, city_code
                         列簇: cf; 列： json
-        具体调用细节请参考WebAPIServer类        
+        具体调用细节请参考WebAPIServer类    
+## hive 数据模型
+        CREATE EXTERNAL TABLE hbase_phone(phone_num int, province string, city string, operator string)
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,cf:province,cf:city,cf:operator")  
+TBLPROPERTIES ("hbase.table.name" = "phone");
    
 ## 技术细节
         对json编码与解码是时使用的是org.json库，JSONHelper可以直接将json字符串转换为对象。
