@@ -44,4 +44,5 @@ SCRIPT=`basename ${PRG}`
 
 export CLASSPATH=$CLASSPATH:$APP_CLASSPATH
 
-java -cp ${APP_CLASSPATH} com.hlbigdata.api.APIStore
+#java -cp ${APP_CLASSPATH} com.hlbigdata.collectdata.Driver weather
+java -cp ${APP_CLASSPATH} com.hlbigdata.collectdata.Driver pm25
