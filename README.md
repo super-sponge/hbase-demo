@@ -21,9 +21,14 @@
         具体调用细节请参考WebAPIServer类    
 ## hive 数据模型
         CREATE EXTERNAL TABLE hbase_phone(phone_num int, province string, city string, operator string)
-STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
-WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,cf:province,cf:city,cf:operator")  
-TBLPROPERTIES ("hbase.table.name" = "phone");
+        STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+        WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,cf:province,cf:city,cf:operator")  
+        TBLPROPERTIES ("hbase.table.name" = "phone");
+        
+        CREATE EXTERNAL TABLE hbase_pm25(key string, city string, class string,pm25 int, primary string)
+        STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+        WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,cf:city,cf:class,cf:pm25,cf:primary")
+        TBLPROPERTIES("hbase.table.name"="pm25");
    
 ## 技术细节
         对json编码与解码是时使用的是org.json库，JSONHelper可以直接将json字符串转换为对象。

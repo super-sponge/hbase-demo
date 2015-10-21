@@ -3,6 +3,7 @@ package com.hlbigdata.collectdata;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -76,23 +77,25 @@ public class PM25 {
                         e.printStackTrace();
                     }
                     String rowKey = cityName + ";" + strDate;
-                    Put put = new Put(rowKey.getBytes());
-                    put.addColumn(CF_DEF.getBytes(), COL_CITY.getBytes(), cityName.getBytes());
 
                     JSONObject jo = new JSONObject(jsonResult);
 
                     JSONObject joData = jo.getJSONObject("data");
                     //check return value
                     if (joData.has("city")) {
-                        put.addColumn(CF_DEF.getBytes(), COL_PM25.getBytes(), joData.getString(COL_CITY).getBytes("utf-8"));
+                        Put put = new Put(rowKey.getBytes());
+                        put.addColumn(CF_DEF.getBytes(), COL_CITY.getBytes(), cityName.getBytes());
+
+                        put.addColumn(CF_DEF.getBytes(), COL_PM25.getBytes(), String.valueOf(joData.getInt("pm2.5")).getBytes("utf-8"));
                         put.addColumn(CF_DEF.getBytes(), COL_CLASS.getBytes(), joData.getString(COL_CLASS).getBytes("utf-8"));
                         put.addColumn(CF_DEF.getBytes(), COL_PRIMARY.getBytes(), joData.getString(COL_PRIMARY).getBytes("utf-8"));
 
+                        table.put(put);
                         System.out.println(strDate + "\tpm25\t" + "succed\t" + cityName);
                     } else {
                         System.out.println(strDate + "\tpm25\t" + "error\t" + cityName);
+                        continue;
                     }
-                    table.put(put);
                 }
                 table.close();
             }

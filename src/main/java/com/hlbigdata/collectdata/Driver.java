@@ -56,7 +56,7 @@ public class Driver {
         return result;
     }
 
-    public static void main(String[] args) throws IOException {
+     public static void main(String[] args) throws IOException {
 
         Configuration config = HBaseConfiguration.create();
 
@@ -71,13 +71,17 @@ public class Driver {
             String type = args[0];
             System.out.println(type);
             if ( type.equals("weather")) {
-                Weather.getAllCityInfoJson(configDir + "/code.txt", config);
+                Weather.getAllCityInfoJson(configDir + "/city_detaill.txt", config);
             } else if (type.equals("pm25")) {
                 PM25.getAllPM25(configDir + "/city.txt", config);
             } else {
                 System.out.println("Please input weather or pm25");
             }
-
+        } else if (args.length == 2) {
+            String type = args[0];
+            if (type.equals("train")) {
+                TrainRun.run(config, configDir + "/station_code.txt", args[1]);
+            }
         }
 
     }
