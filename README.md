@@ -29,6 +29,11 @@
         STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
         WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,cf:city,cf:class,cf:pm25,cf:primary")
         TBLPROPERTIES("hbase.table.name"="pm25");
+        
+        CREATE EXTERNAL TABLE hbase_traininfo(key string, json string)
+            STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+            WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,cf:json")
+            TBLPROPERTIES("hbase.table.name"="traininfo");
    
 ## 技术细节
         对json编码与解码是时使用的是org.json库，JSONHelper可以直接将json字符串转换为对象。

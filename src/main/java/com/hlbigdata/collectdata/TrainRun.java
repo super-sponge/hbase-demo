@@ -101,9 +101,21 @@ public class TrainRun {
                         continue;
                     }
                     try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                        strJson = getFromAPIX(mapStationCode.get(start), mapStationCode.get(end), date );
+
+                    } catch (Exception e) {
                         e.printStackTrace();
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                        strJson = getFromAPIX(mapStationCode.get(start), mapStationCode.get(end), date );
                     }
                     strJson = getFromAPIX(mapStationCode.get(start), mapStationCode.get(end), date );
                     JSONObject jo = new JSONObject(strJson);
