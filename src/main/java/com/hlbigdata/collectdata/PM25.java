@@ -33,7 +33,7 @@ public class PM25 {
      * @param cityname cityid
      * @return  json city data
      */
-    private static String getFromAPIX(String cityname) {
+    private static String getFromAPIX(String cityname) throws IOException {
         String httpUrl = "http://a.apix.cn/apixlife/pm25/PM2.5";
         String httpArg = "cityname=" + cityname;
         return Driver.requestAPIX(httpUrl, httpArg, APIX_APIKEY);

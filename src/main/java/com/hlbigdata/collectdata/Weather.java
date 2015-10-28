@@ -116,7 +116,7 @@ public class Weather {
      * @param cityid cityid
      * @return  json weather data
      */
-    private static String getWeatherFromApi(String cityid) {
+    private static String getWeatherFromApi(String cityid) throws IOException {
         String httpUrl = "http://a.apix.cn/apixlife/weather/weather";
         String httpArg = "cityid=" + cityid;
         return Driver.requestAPIX(httpUrl, httpArg, APIX_APIKEY);
@@ -124,7 +124,12 @@ public class Weather {
     }
 
     private static void ParseJsonWeather(String cityid) {
-        String jsonData = getWeatherFromApi(cityid);
+        String jsonData = null;
+        try {
+            jsonData = getWeatherFromApi(cityid);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         JSONObject jo = new JSONObject(jsonData);
         JSONObject joData = jo.getJSONObject("data");
 
