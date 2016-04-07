@@ -37,3 +37,59 @@
    
 ## 技术细节
         对json编码与解码是时使用的是org.json库，JSONHelper可以直接将json字符串转换为对象。
+
+## python 读取hbase
+
+### thrift 读取hbase
+
+#### install thrift
+    请参考 hbase 官方网站
+    对于普通用户使用了自带的python ，需要进入thrift-0.9.3/lib/py 手动安装python的thrift 组件
+#### 拷贝hbase的thrift 配置文件
+    对于用ambari + hdp 安装的hbase，其thrift在/usr/hdp/current/hbase-client/include/thrift目录下,启动thrift2时拷贝hbase2.thrift
+#### 根据hbase2.thrift 生成python文件
+    thrift -r --gen py hbase2.thrift
+#### 编写客服端程序
+    class HbaseAccess(object):
+    def __init__(self, host, port):
+        self.hbaseThriftHost = host
+        self.hbaseThriftPort = port
+        trans = TSocket.TSocket(self.hbaseThriftHost, self.hbaseThriftPort)
+        self.transport = TTransport.TBufferedTransport(trans)
+        protocol = TBinaryProtocol.TBinaryProtocol(self.transport)
+        self.client = THBaseService.Client(protocol)
+        self.transport.open()
+    """
+
+    """
+    def put(self, tbName, rowKey, data):
+
+        cols = []
+        for (key, value) in data.items():
+            cols.append(TColumnValue(key.split(':')[0], key.split(':')[1], value))
+
+        self.client.put(tbName, TPut(rowKey, cols))
+
+    def get(self,tbName, rowKey, cols = None):
+
+        if cols:
+            lst = []
+            for col in cols:
+                lst.append(TColumnValue(col.split(':')[0], col.split(':')[1]))
+            get = TGet(rowKey,lst)
+        else:
+            get = TGet(rowKey)
+        result = self.client.get(tbName, get)
+        dic = dict()
+        for col in result.columnValues:
+            dic[col.family + ':' + col.qualifier] = col.value
+        return  dic
+
+    def __del__(self):
+        self.transport.close()
+        
+        
+#### 启动thrift server
+    /usr/hdp/current/hbase-master/bin/hbase-daemon.sh start thrift2
+### reset 读取hbase
+
